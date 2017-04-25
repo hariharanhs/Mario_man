@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="loading_spinner" class="loading_spinner"></div>
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>PROFILE</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUs.html">About Us</a></li> 
+				<li><a href="user_editmprofile.html">Edit Profile</a></li> 
+				<li><a href="mario_findjob.html">Find Jobs</a></li> 
+				<li><a href="mario_myjobs.html">My Jobs</a></li> 
+				<!-- -->
+				<li>
+					<a href="mario_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	<!--Menu Code -->	
+	<div class="profile">
+		<div class="profile-contant">
+			<div class="profile-img pr-bg pr-bor-bt">
+				<img class="mar-b15 mar-tp20 br" id="my_image" src="img/dummy.jpg" onclick="confirmselect()"/>
+				<h3 class="title mar-b15"><span style="color:#fff" id="welcomeuser"></span></h3>
+			</div>
+			<div class="container">
+				<div class="dashboard">
+					<a href="user_editmprofile.html">
+						<div class="main-div1">
+							<img class="mar" src="img/edit2.png">
+							<h3 class="marval">Edit Profile</h3>
+						</div>
+						<div class="seprator dash1">
+							<img style="margin-top:50px;" src="img/d1.png">
+						</div>
+						<div class="seprator dash2">
+							<img style="margin-top:117px;" src="img/d4.png">
+						</div>
+					</a>
+					<a href="mario_findjob.html">
+						<div class="main-div2">
+							<img class="mar" src="img/list2.png">
+							<h3 class="marval">Find Jobs</h3>
+						</div>
+						<div class="seprator dash3">
+							<img style="margin-top:126px;" src="img/d2.png">
+						</div>
+					</a>
+					<a href="mario_myjobs.html">
+						<div class="main-div3">
+							<img class="mar" src="img/list2.png">
+							<h3 class="marval">My Jobs</h3>
+						</div>
+					</a>
+					<a href="mario_notificationcenter.html">
+						<div class="main-div4">
+						<!-- -->
+							<div  class="button_badge" id="notifynumber" style="display:none;">
+							</div>
+							<img class="mar" src="img/rating1.png">
+							<h3 class="marval">Notifications</h3>
+						</div>
+						<div class="seprator dash4">
+							<img style="margin-top:185px;" src="img/d3.png">
+						</div>
+					</a>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		$(function() {
+			$('nav#menu').mmenu();
+		});
+		function goback()
+		{
+			window.location.href="mario_login.html";
+		}
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		function init()
+		{
+			startLoader();
+			var User_Name = window.localStorage.getItem("user_name"); 
+			var marsession_id = window.localStorage.getItem("user_id");
+			$('#welcomeuser').text(User_Name);
+			
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/mario_getdetails.php', 	
+			   data:"marsession_id="+marsession_id,
+			   type: "post",
+			   success: function(data) {
+			   
+				   var result=JSON.parse(data);
+				   var imagesrc = result[0].Profile_Picture;
+				 
+					if(imagesrc != '' && imagesrc != null)
+					  {
+						window.localStorage.setItem("user_profile", imagesrc); 
+						var imgrc = "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+imagesrc;
+						document.getElementById("my_image").src=imgrc;
+					  }
+					  else
+					  {
+					  document.getElementById("my_image").src= "img/dummy.jpg";
+					  }
+				
+			   },	
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			   stopLoader();
+			   return getNotification();
+		}
+		/*********************************/
+		var user_service = window.localStorage.getItem("user_service"); 
+		var marsession_id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/mario_notifycount.php",
+				data : "user_service="+user_service+"&marsession_id="+marsession_id,
+				async: true,
+				cache: false,
+				success: function(data){
+					//alert(data);
+					if(data != "")
+					{
+						addmsg(data);
+					}
+					setTimeout(
+					waitForMsg,
+					30000
+					);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumber').style.display = "none";
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumber').style.display = "block";
+				document.getElementById('notifynumbermenu').style.display = "block";
+				
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+				document.getElementById('notifynumber').innerHTML = msg;
+			}
+		}
+		
+		/***Code for getting confirmation dialog box to choose whether camera or file browser**/
+		  function confirmselect() 
+		  {
+		  navigator.notification.confirm(
+			  "Choose your option", // the message
+			function( index ) {
+				switch ( index ) {
+					case 1:
+					capturePhoto();
+						// The first button was pressed
+						break;
+					case 2:
+					getPhoto();
+						// The second button was pressed
+						break;
+					case 3:
+						// The third button was pressed
+						break;
+				}
+			},
+			"profile picture",                   // a title
+			[ "Camera", "File"] // text of the buttons
+		);
+		}
+		
+		// A button will call this function
+		// To capture photo
+		function capturePhoto() {
+			// Take picture using device camera
+			navigator.camera.getPicture(uploadPhoto, onFail, { 
+			saveToPhotoAlbum: true,  
+				quality: 50,destinationType: Camera.DestinationType.FILE_URI 
+			});
+		}
+
+		// A button will call this function
+		// To select image from gallery
+		function getPhoto(source) {
+			// Retrieve image file location from specified source
+			navigator.camera.getPicture(uploadPhoto, onFail, {quality: 50,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+			});
+		}
+		
+		function uploadPhoto(imageURI) {
+		
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			
+			var options = new FileUploadOptions();
+			options.fileKey = "file";
+			var userid = '123456';
+			var imagefilename = userid + Number(new Date()) + ".jpg";
+			options.fileName = imagefilename;
+			options.mimeType = "image/jpg";
+
+			var params = new Object();
+			params.imageURI = imageURI;
+			params.marsession_id = sessionStorage.marsession_id;
+			options.params = {marsession_id};
+			options.chunkedMode = false;
+			var ft = new FileTransfer();
+			
+			var url = "http://182.73.106.114:8088/Mario_Man/mario_update_profile.php";
+			
+			document.getElementById("loading_spinner").style.display="block";
+			ft.upload(imageURI, url, win, fail, options, true);
+		}
+		//Success callback
+		function win(r) 
+		{
+			setTimeout(stop, 2000);
+			alert("Image uploaded successfully!!");
+			window.location="mario_dashboard.html";
+		}
+		//Failure callback
+		function fail(error) {
+			alert("There was an error in uploading image");
+		}
+		// Called if something bad happens.
+		// 
+		function onFail(message) {
+			alert('Failed because: ' + message);
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+				window.location.href="index.html";
+		}
+		
+	</script>
+</body>
+
+</html>

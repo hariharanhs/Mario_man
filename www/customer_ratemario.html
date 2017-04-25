@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link href="css/rating.css" rel="stylesheet" type="text/css">
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="loading_spinner" class="loading_spinner"></div>
+<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>RATING AND REVIEW</h1></div>
+		</div>
+		<nav id="menu">
+		<ul>
+			<li><a href="AboutUsC.html">About Us</a></li> 
+			<li><a href="customer_dashboard.html">Dashboard</a></li> 
+			<li><a href="user_editprofile.html">Edit Profile</a></li> 
+			<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+			<li><a href="customer_myjobs.html">My Jobs</a></li> 
+			<li>
+				<a href="customer_notificationcenter.html">
+					<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+					Notifications
+				</a>
+			</li>
+			<li><a href="javascript:logout()">Log Out</a></li>
+		</ul>
+	</nav>
+</div>
+
+	
+	<div class="profile">
+		<div class="profile-contant">
+			<div class="profile-img pr-bg pr-bor-bt">
+				<img class="mar-b15 mar-tp20 br" id="marioprofile"/>
+				<h3 class="title mar-b15"><span style="color:#fff" id="marioname"></span></h3>
+				<div class="rate-star" id="old_rating"></div>
+			</div>
+			<div class="container">
+				<h3 class="title"><span>Rating </span></h3>
+					<div style="text-align:center;"><input name="rating" value="0" id="rating_star" type="hidden" /></div>
+				
+				<p style="text-align:left;margin-bottom:0px;"><span class="edit-icon"></span> <span>Write a Review...</span></p>
+				<div class="login">
+					<textarea value="write your review.." id="review_textarea" name="review_textarea"></textarea>
+				</div>
+				<div class="btn-div">
+				  <div class="btn-bg2"><a href="javascript:insert_review()">SUBMIT</a></div>
+				</div>
+			</div>
+		</div>
+	<input type="hidden" id="hidden_review" name="hidden_review">
+	
+	</div>
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript" src="js/rating.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}	
+		
+		$(function() {
+			$("#rating_star").codexworld_rating_widget({
+				starLength: '5',
+				initialValue: '',
+				callbackFunctionName: 'processRating',
+				imageDirectory: 'img/',
+				inputAttr: 'postID'
+			});
+		});
+		
+		function processRating(val){
+		
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			var Customer_Id = window.localStorage.getItem("user_id"); 
+			
+		  $.ajax({
+				type: 'POST',
+				url : 'http://182.73.106.114:8088/Mario_Man/customer_ratemario.php',
+				data: 'tempjobID='+tempjobID+'&tempmarioID='+tempmarioID+'&Customer_Id='+Customer_Id+'&ratingPoints='+val,
+				dataType: 'json',
+				success : function(data) {
+				//alert(data);
+					if (data == 1) {
+						alert('You have rated '+val+'');
+						
+					}else{
+						alert('Some problem occured, please try again.');
+					}
+				}
+			});
+		}	
+		function init()
+		{
+			startLoader();
+			
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			var Customer_Id = window.localStorage.getItem("user_id"); 
+			
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_awardjob.php',
+			   data:"tempmarioID="+tempmarioID+"&tempjobID="+tempjobID,
+			   type: "post",
+			   success: function(data) {
+				//alert(data);
+							var openP =JSON.parse(data);
+							document.getElementById("marioname").innerHTML = openP[0].User_Name;
+							
+							$("#marioprofile").attr("src", "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+openP[0].Profile_Picture);
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			
+			
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_getrating.php',
+			   data:"tempmarioID="+tempmarioID,
+			   type: "post",
+			   success: function(data) {
+					//alert(data);
+					var rate =JSON.parse(data);
+					
+					var sum = rate[0]; 
+					var nums = rate[1];
+					
+					var avg = sum / nums ; 
+
+					var rate_value = Math.floor(avg);
+					
+					var remain_star = 5 - rate_value;
+					
+					var text='';
+					
+					for(var j = 0; j < rate_value; j++) 
+					{
+						text+="<span><img src='img/star-new-cr.png'></span>"; 
+					}
+					for(var i = 0; i < remain_star; i++)
+					{					
+						text+="<span><img src='img/star-new.png'></span>"; 
+					}
+					
+					document.getElementById("old_rating").innerHTML = text;
+					
+					
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			stopLoader();
+		}
+		function insert_review()
+		{
+		
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			var Customer_Id = window.localStorage.getItem("user_id"); 
+			var val = document.getElementById('review_textarea').value;
+			
+			  $.ajax({
+					type: 'POST',
+					url : 'http://182.73.106.114:8088/Mario_Man/customer_insertreview.php',
+					data: 'tempjobID='+tempjobID+'&tempmarioID='+tempmarioID+'&Customer_Id='+Customer_Id+'&Review='+val,
+					dataType: 'json',
+					success : function(data) {
+					//alert(data);
+						if (data == 1) {
+							alert('Successfully inserted');
+						}else{
+							alert('Some problem occured, please try again.');
+						}
+					}
+				});
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.localStorage.setItem("tempmarioID","");
+			window.location.href="customer_myjobs.html";
+		}
+	
+	</script>
+</body>
+
+</html>

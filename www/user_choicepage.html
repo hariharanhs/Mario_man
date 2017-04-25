@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+	<div id="loading_spinner" class="loading_spinner"></div>
+	<div id="page">
+		<div class="header">
+			<div class="page-title"><h1>CHOOSE YOUR LOGIN</h1></div>
+		</div>
+	</div>
+	<div>
+		<div class="choose-hed">
+			<img src="img/choose-banner.jpg">
+		</div>
+		<div class="container">
+			<a href="javascript:mario_firstpage()">
+				<div class="choose-div">
+					<img src="img/choose-mm.png"/>
+					<h2>BE A MARIOMAN</h2>
+				</div>
+			</a>
+			<a href="javascript:customer_firstpage()">
+				<div class="choose-div">
+					<img src="img/choose-mm1.png"/>
+					<h2>HIRE A MARIOMAN</h2>
+				</div>
+			</a>
+		</div>
+	</div>
+
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		function init()
+		{
+		startLoader();
+			var user_type = window.localStorage.getItem("user_type");
+			if(user_type != null)
+			{
+				window.location.href="user_namepage.html";
+			}
+			
+			var user_name = window.localStorage.getItem("user_name"); 
+			if(user_name != null)
+			{
+				window.location.href="user_bankdetails.html";
+			}
+			
+			var bank_name = window.localStorage.getItem("bank_name");
+			if(bank_name != "" && bank_name != null)
+			{
+				if(result[0].User_Type == "1")
+				{
+					window.location.href="mario_dashboard.html";
+				}
+				if(result[0].User_Type == "2")
+				{
+					window.location.href="customer_dashboard.html";
+				}
+			}
+			
+			stopLoader();
+		}
+		function goback()
+		{
+			window.location.href="user_signin.html";
+		}
+		function mario_firstpage()
+		{
+			var user_id = window.localStorage.getItem("user_id"); 
+			var user_type = "1";
+			$.ajax({
+					url: 'http://182.73.106.114:8088/Mario_Man/update_user.php',
+					type: "POST",
+					data: "UserId="+user_id+"&UserType="+user_type,
+					async: false,
+					success: function(data) { 
+						if(data  != ""){
+							if(data == 0)
+							{
+								alert("Try again! Error Occured");
+								window.location.href="index.html";
+							}
+							else
+							{
+								window.localStorage.setItem("user_type", "1"); 
+								window.location.href="user_namepage.html";
+							}
+						}
+					},
+					error:function(err){
+						alert(err.message);
+					},
+				});
+				
+		}
+		function customer_firstpage()
+		{
+			
+			var user_id = window.localStorage.getItem("user_id"); 
+			var user_type = "2";
+			$.ajax({
+					url: 'http://182.73.106.114:8088/Mario_Man/update_user.php',
+					type: "POST",
+					data: "UserId="+user_id+"&UserType="+user_type,
+					async: false,
+					success: function(data) { 
+						if(data  != ""){
+							if(data == 0)
+							{
+								alert("Try again! Error Occured");
+								window.location.href="user_signin.html";
+							}
+							else
+							{
+								var result=JSON.parse(data);
+								window.localStorage.setItem("user_type", "2"); 
+								window.location.href="user_namepage.html";
+							}
+						}
+					},
+					error:function(err){
+						alert(err.message);
+					},
+				});
+		}
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.location.href="user_signin.html";
+		}
+    </script>
+</body>
+
+</html>

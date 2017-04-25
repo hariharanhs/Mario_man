@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" />  
+	<!-- Mario Man CSS , Script Ends here -->
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body>
+<div id="page">
+		<div class="header">
+
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>Account details</h1></div>
+			
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="AboutUs.html">About Us</a></li> 
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+</div>
+<div id="loading_spinner" class="loading_spinner"></div>	
+
+	<div class="container">
+		<div class="login">
+			<form>
+				<h3 style="color:#555555; margin:0; padding:0;">Bank Name</h3>
+				<br>
+				<input type="text" id="bank_name" name="bank_name" placeholder="Enter your bank name"/>
+				<br><br>
+				<h3 style="color:#555555; margin:0; padding:0;">Account Number</h3>
+				<br>
+				<input type="number" id="account_number" name="account_number" placeholder="Enter your account number"/>
+				<br><br>
+				<h3 style="color:#555555; margin:0; padding:0;">Branch</h3>
+				<br>
+				<input type="text" id="branch" name="branch" placeholder="Enter your branch"/>
+				<br><br>
+				<h3 style="color:#555555; margin:0; padding:0;">IFSC Code</h3>
+				<br>
+				<input type="text" id="Ifsc_code" name="Ifsc_code" placeholder="Enter your IFSC code"/>
+				<br><br>
+				<h3 style="color:#555555; margin:0; padding:0;">Other Details</h3>
+				<br>
+				<input type="text" id="others" name="others" placeholder="Enter your details"/>
+				<br>
+				<div class="btn-div" style="text-align:center">
+					<div class="btn-bg2"><a href="javascript:save_details()"> SAVE </a></div>
+				</div>	
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		document.addEventListener("deviceready", init, false);
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function init()
+		{
+			startLoader();
+			stopLoader();
+			var user_bankname = window.localStorage.getItem("user_bankname");
+			if(user_bankname != "" && user_bankname != null)
+			{
+				var user_type = window.localStorage.getItem("user_type");
+				if(user_type == "1")
+				{
+					window.location.href="mario_dashboard.html";  // redirect to mario_dashboard page if user type is 1
+				}
+				if(user_type == "2")
+				{
+					window.location.href="customer_dashboard.html"; // redirect to customer_dashboard page if user type is 2
+				}
+			}
+			var user_id = window.localStorage.getItem("user_id");
+			$.ajax({
+						url: 'http://182.73.106.114:8088/Mario_Man/user_getdetails.php',
+						type: "POST",
+						data: "user_id="+user_id,
+						async: false,
+						success: function(data) {
+						//alert(data);						
+						if(data != 0)
+							{
+								var result = data.split('@@');
+								var user_info = result[0];
+								var user_info_new = JSON.parse(user_info);
+								var user_detail = result[1];
+								var user_details_new = JSON.parse(user_detail);
+								
+											if(user_details_new[0].User_Name != null) // check whether the user give their details like name, payment type 
+											{
+												window.localStorage.setItem("user_name", user_details_new[0].User_Name); 
+												window.localStorage.setItem("user_service",user_details_new[0].Service_Providing); 
+												window.localStorage.setItem("user_paymenttype", user_details_new[0].Payment_Type); 
+												window.localStorage.setItem("user_profile", user_details_new[0].Profile_Picture); 
+												
+												if(user_details_new[0].Bank_Name != "" && user_details_new[0].Bank_Name != null) // check whether the user give their bank details
+												{
+													window.localStorage.setItem("user_bankname", user_details_new[0].Bank_Name); 
+													if(user_info_new[0].User_Type == "1")
+													{
+														window.location.href="mario_dashboard.html";  // redirect to mario_dashboard page if user type is 1
+													}
+													if(user_info_new[0].User_Type == "2")
+													{
+														window.location.href="customer_dashboard.html"; // redirect to customer_dashboard page if user type is 2
+													}
+												}
+												
+											}
+											else
+											{
+												window.location.href="user_namepage.html"; // redirect to namepage if there is no details like name, payment type
+											}
+										
+							}
+							else
+							{
+								window.location.href="user_signin.html"; // redirect to login page if there is no details
+							}
+						},
+						error:function(err){
+							alert(err.message);
+						},
+					});
+			
+		}
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+				return save_details();
+			}
+		});
+		function save_details()
+		{
+			var bank_name = document.getElementById('bank_name').value;
+			var account_number = document.getElementById('account_number').value;
+			var branch = document.getElementById('branch').value;
+			var Ifsc_code = document.getElementById('Ifsc_code').value;
+			var others = document.getElementById('others').value;
+			
+			if(bank_name =='')
+			{
+				alert('Please enter your bank name');
+				document.getElementById('bank_name').focus();
+				return false;
+			}
+			if(account_number =='')
+			{
+				alert('Please enter your account number');
+				document.getElementById('account_number').focus();
+				return false;
+			}
+			if(branch =='')
+			{
+				alert('Please enter your branch');
+				document.getElementById('branch').focus();
+				return false;
+			}
+			if(Ifsc_code =='')
+			{
+				alert('Please enter your IFSC code');
+				document.getElementById('Ifsc_code').focus();
+				return false;
+			}
+			else
+			{
+				var mario_id = window.localStorage.getItem("user_id"); 
+				var formData = new FormData();
+				
+				formData.append('bank_name', $('#bank_name').val());
+				formData.append('account_number', $('#account_number').val());
+				formData.append('branch', $('#branch').val());
+				formData.append('Ifsc_code', $('#Ifsc_code').val());
+				formData.append('others', $('#others').val());
+				formData.append('UserId', mario_id);
+				
+				$.ajax({
+					url: 'http://182.73.106.114:8088/Mario_Man/insert_bankdetails.php',
+					type: "POST",
+					data: formData,
+					async: false,
+					contentType: false,
+					processData: false,
+					success: function(data) { 
+					//alert(data);
+						if(data  != ""){
+							if(data == 0)
+							{
+								alert("Error occured! Try again");
+								return false;
+							}
+							else
+							{	
+								window.localStorage.setItem("bank_name", $('#bank_name').val()); 
+								alert("Saved successfully");
+								var user_type = window.localStorage.getItem("user_type");
+								if(user_type == 1)
+								{
+									window.location.href="mario_dashboard.html";
+								}
+								else
+								{
+									window.location.href="customer_dashboard.html";
+								}
+							}
+						}
+					},
+					error:function(err){
+						alert(err.message);
+					},
+				});
+			}
+		}
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.location.href="user_namepage.html";
+		}
+	</script>
+</body>
+
+</html>

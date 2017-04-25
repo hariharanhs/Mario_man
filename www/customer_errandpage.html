@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>PROFILE</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li><a href="customer_myjobs.html">My Jobs</a></li> 
+				<li>
+					<a href="customer_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	<!--Menu Code -->
+	<div id="loading_spinner" class="loading_spinner"></div>	
+	<input type="hidden" id="start_latitude" value=""/>
+	<input type="hidden" id="start_longitude" value=""/>
+	<input type="hidden" id="end_latitude" value=""/>
+	<input type="hidden" id="end_longitude" value=""/>
+	<input type="hidden" id="user_service" value=""/>
+	
+	
+	<div style="margin-top:20px;">
+		<div class="profile">
+			<div class="profile-contant">
+				<div class="profile-img">
+					<img class="mar-b15" id="my_image" src="img/dummy.jpg" onclick="confirmselect()" />
+					<h3 class="title mar-b15"><span id="welcomeuser"></span></h3>
+				</div>
+				<div class="container">
+					<div class="login">
+						<h3>Pickup Address</h3>
+						<textarea id="job_address" name="job_address"></textarea>
+						<h3>Drop Address</h3>
+						<textarea id="drop_address" name="drop_address"></textarea>
+						<h3>Name</h3>
+						<input type="text" id="job_name" name="job_name" placeholder="Enter your job name"/>
+						<h3>Description</h3>
+						<textarea id="job_description" name="job_description" placeholder="Enter your job description"></textarea>
+						<h3>Time</h3>
+						<input type="time" id="job_time" name="job_time"/>
+						<h3>Expire Date</h3>
+						<input type="date" id="job_expiredate" name="job_expiredate" />
+						<h3>Pay</h3>
+						<input type="number" id="job_pay" min="10" name="job_pay"/>
+						<div class="btn-div">
+						  <div class="btn-bg2"><a href="javascript:post_job()">POST JOB</a></div>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		$('input').keypress(function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if ((code==13) || (code==10))
+		{
+			return post_job();
+		}
+		});
+		function init()
+		{
+			startLoader();
+			stopLoader();
+			
+			var qryString = window.location.search.substring(1);
+			
+			var address=qryString.split("&");
+			
+			var addr = address[0];
+			var addr_value = addr.split("=");
+			
+			var eaddr = address[1];
+			var eaddr_value = eaddr.split("=");
+			
+			var s_lat = address[2];
+			var s_lat_value = s_lat.split("=");
+			
+			
+			var s_lon = address[3];
+			var s_lon_value = s_lon.split("=");
+			
+			
+			var lat = address[4];
+			var lat_value = lat.split("=");
+			
+			
+			var lon = address[5];
+			var lon_value = lon.split("=");
+			
+
+			var service= address[6];
+			var service_value = service.split("=");
+			
+			
+			document.getElementById('job_address').value = decodeURIComponent(addr_value[1]);
+			document.getElementById("drop_address").value = decodeURIComponent(eaddr_value[1]);
+			document.getElementById('start_latitude').value = decodeURIComponent(s_lat_value[1]);	
+			document.getElementById('start_longitude').value = decodeURIComponent(s_lon_value[1]);
+			document.getElementById('end_latitude').value = decodeURIComponent(lat_value[1]);	
+			document.getElementById('end_longitude').value = decodeURIComponent(lon_value[1]);
+			document.getElementById('user_service').value = decodeURIComponent(service_value[1]);
+			
+			var user_name = window.localStorage.getItem("user_name"); 
+			var user_profile = window.localStorage.getItem("user_profile"); 
+			$('#welcomeuser').text(user_name);
+			$("#my_image").attr("src", "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+user_profile);
+			window.localStorage.setItem("user_profile", user_profile); 
+			return getNotification();
+		}
+		/*********************************/
+		
+		var Customer_Id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+		
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/customer_notifycount.php",
+				data : "Customer_Id="+Customer_Id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+						if(data != "")
+						{
+							addmsg(data);
+						}
+						setTimeout(
+						waitForMsg,
+						30000
+						);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+			}
+		}
+		function post_job()
+		{
+			var job_address = document.getElementById('job_address').value;
+			var drop_address = document.getElementById('drop_address').value;
+			var job_name = document.getElementById('job_name').value;
+			var job_time = document.getElementById('job_time').value;
+			var job_expiredate = document.getElementById("job_expiredate").value;
+			var job_description = document.getElementById('job_description').value;
+			var job_pay = document.getElementById('job_pay').value;
+			
+			if(job_address =='')
+			{
+				alert('Please enter your job address');
+				document.getElementById('job_address').focus();
+				return false;
+			}
+			if(drop_address =='')
+			{
+				alert('Please enter your drop address');
+				document.getElementById('drop_address').focus();
+				return false;
+			}
+			if(job_name =='')
+			{
+				alert('Please enter your job name');
+				document.getElementById('job_name').focus();
+				return false;
+			}
+			if(job_description =='')
+			{
+				alert('Please enter your job description ');
+				document.getElementById('job_description').focus();
+				return false;
+			}
+			if(job_time =='')
+			{
+				alert('Please enter your job time');
+				document.getElementById('job_time').focus();
+				return false;
+			}
+			if(job_expiredate =='')
+			{
+				alert('Please enter your job expire date');
+				document.getElementById('job_expiredate').focus();
+				return false;
+			}
+			if(job_pay =='')
+			{
+				alert('Please enter your job pay');
+				document.getElementById('job_pay').focus();
+				return false;
+			}else{ 
+				if(job_pay < 10){
+					alert("Basic pay for this jobs is 10$.");
+					document.getElementById("job_pay").focus();
+					return false; 
+				}
+								
+
+			}
+			
+			var user_id = window.localStorage.getItem("user_id"); 
+			var user_service = document.getElementById('user_service').value;
+		
+			var formData = new FormData();
+			formData.append('job_latitude', $('#start_latitude').val());
+			formData.append('job_longitude', $('#start_longitude').val());
+			
+			formData.append('job_end_latitude', $('#end_latitude').val());
+			formData.append('job_end_longitude', $('#end_longitude').val());
+			
+			
+			formData.append('user_id', user_id);
+			formData.append('user_service', user_service);
+			formData.append('job_address', $('#job_address').val());
+			formData.append('job_destination_address', $('#drop_address').val());
+			formData.append('job_name', $('#job_name').val());
+			formData.append('job_description', $('#job_description').val());
+			formData.append('job_time', $('#job_time').val());	
+			formData.append('job_pay', $('#job_pay').val());
+			formData.append('job_expiredate', $('#job_expiredate').val());
+			
+			$.ajax({
+				url: 'http://182.73.106.114:8088/Mario_Man/customer_postjob.php',
+				type: "POST",
+				data: formData,
+				async: false,
+				contentType: false,
+				processData: false,
+				success: function(data) {
+				//alert(data);
+							if(data  != "" && data != 0)
+							{
+						
+								navigator.notification.alert("Successfully Posted");
+								window.location.href="customer_myjobs.html";
+							}
+							else
+							{
+								alert("Try again! error occured");
+								return false;
+							}
+				},
+				error:function(err){
+					alert(err.message);
+				},
+			});
+			
+		}
+		
+	</script>
+</body>
+
+</html>

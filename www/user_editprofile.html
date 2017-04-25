@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="loading_spinner" class="loading_spinner"></div>	
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>PROFILE</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li><a href="customer_myjobs.html">My Jobs</a></li> 
+				<li>
+					<a href="customer_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	<!--Menu Code -->
+	
+	<div style="margin-top:20px;">
+		<div class="profile">
+			<div class="profile-contant">
+				<div class="profile-img">
+					<img class="mar-b15" id="my_image" src="img/dummy.jpg" onclick="confirmselect()" />
+					<h3 class="title mar-b15"><span id="welcomeuser"></span></h3>
+				</div>
+				<div class="container">
+					<h3 class="title"><span>Profile Information </span></h3>
+					<form>
+						<div class="login">
+							<h3>Mario Name</h3>
+							<input type="text" id="mario_name" name="mario_name" placeholder="Enter your name"/>
+							<h3>Password</h3>
+							<input type="password" id="mario_password" name="mario_password" placeholder="Enter your password"/>
+							<h3>Email ID</h3>
+							<input type="email" id="mario_email" name="mario_email" placeholder="Enter your email Id"/>
+							<h3>Mobile Number</h3>
+							<input type="number" id="mario_phone" name="mario_phone" placeholder="Enter your mobile number"/>
+							<div id="service_div" style="display:none;">
+								<ul class="radio">
+									<h3 style="color:#555555; margin:15px 0; padding:0;">Choose Your Service</h3>
+									<li>
+									<input type="checkbox" class="checkbox-n" id="service1" name="service[]" value="1">
+									<label for="service1">Driver / Pillon rider</label>
+									</li>
+									<li>
+									<input type="checkbox" class="checkbox-n" id="service2" name="service[]" value="2">
+									<label for="service2">Run Errands</label>
+									</li>
+									<li>
+									<input type="checkbox" class="checkbox-n" id="service3" name="service[]" value="3">
+									<label for="service3">Handyman</label>
+									</li>
+									<div class="clear"></div>
+								</ul>
+							</div>
+							<h3>Payment Type</h3>
+							<ul class="radio">
+								<li>
+									<input type="radio" class="radioClass" name="group_new" id="Credit" value="1">
+									<label for="radio-4">Credit / Debit Card</label>
+									<div class="check"></div>
+									<div class="clear"></div>
+								</li>
+								<li>
+									<input type="radio" class="radioClass" name="group_new" id="Paypal" value="2">
+									<label for="radio-5">PayPal</label>
+									<div class="check"></div>
+									<div class="clear"></div>
+								</li>
+								<div class="clear"></div>
+							</ul>
+							
+						</div>
+						<h3 class="title"><span>Bank Details </span></h3>
+						<div class="login">
+							<h3>Bank Name</h3>
+							<input type="text" id="mario_bankname" name="mario_bankname" placeholder="Enter your bank name"/>
+							<h3>Account Number</h3>
+							<input type="number" id="mario_accountno" name="mario_accountno" placeholder="Enter your account number"/>
+							<h3>Bank Branch</h3>
+							<input type="text" id="mario_bankbranch" name="mario_bankbranch" placeholder="Enter your bank branch"/>
+							<h3>IFSC Code</h3>
+							<input type="text" id="mario_ifsc" name="mario_ifsc" placeholder="Enter your ifsc code"/>
+							<h3>Other Details</h3>
+							<input type="text" id="mario_others" name="mario_others" placeholder="Enter your details"/>
+							<div class="btn-div">
+							  <div class="btn-bg2"><a href="javascript:mario_update()">UPDATE</a></div>
+							</div>
+						</div>
+					</form>
+					
+					
+					<div class="rating" id="rateandreview" style="display:none;">
+						<div class="star" style="border:none;">
+							<h3 class="title">Ratings</h3>
+							<p> 
+								<div class="rate-star" id="old_rating"></div>
+								<!-- 
+								<span class="star-select-icon"></span> 
+								<span class="star-select-icon"></span> 
+								<span class="star-icon"></span> 
+								<span class="star-icon"></span>-->
+							</p>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function init()
+		{
+			startLoader();
+			
+			var marsession_id = window.localStorage.getItem("user_id");
+			
+			var user_type = window.localStorage.getItem("user_type");
+			//alert(user_type);
+			if(user_type == 1)
+			{
+				document.getElementById('service_div').style.display = "block";
+				document.getElementById('rateandreview').style.display = "block";
+				
+				 $.ajax({
+					   url : 'http://182.73.106.114:8088/Mario_Man/customer_getrating.php',
+					   data:"tempmarioID="+marsession_id,
+					   type: "post",
+					   success: function(data) {
+							//alert(data);
+							var rate =JSON.parse(data);
+							
+							var sum = rate[0]; 
+							var nums = rate[1];
+							
+							var avg = sum / nums ; 
+
+							var rate_value = Math.floor(avg);
+							
+							var remain_star = 5 - rate_value;
+							
+							var text='';
+							
+							for(var j = 0; j < rate_value; j++) 
+							{
+								text+="<span class='star-select-icon'></span> "; 
+							}
+							for(var i = 0; i < remain_star; i++)
+							{					
+								text+="<span class='star-icon'></span>"; 
+							}
+							
+							document.getElementById("old_rating").innerHTML = text;
+							
+							
+						},
+					   error:function(error){
+					   navigator.notification.alert("Error occured. Please try again.");
+					   }
+					   });
+			}
+			//alert(marsession_id);
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/mario_getdetails.php', 	
+			   data:"marsession_id="+marsession_id,
+			   type: "post",
+			   success: function(data) {
+				//alert(data);
+				   var result=JSON.parse(data);
+				   
+				   var marionamevar = result[0].User_Name;
+				   $('#welcomeuser').text(marionamevar);
+				   var imagesrc = result[0].Profile_Picture;
+				   $("#my_image").attr("src", "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+imagesrc);
+					window.localStorage.setItem("user_profile", imagesrc); 
+					
+				   document.getElementById("mario_name").value=result[0].User_Name;
+				   document.getElementById("mario_password").value=result[0].Password;
+				   document.getElementById("mario_email").value=result[0].Email_Id;
+				   document.getElementById("mario_phone").value=result[0].Phone_Number;
+				   if(result[0].Payment_Type == "1")
+				   {
+						 document.getElementById("Credit").checked = true;
+				   }
+				   else
+				   {
+						document.getElementById("Paypal").checked = true;
+				   }
+				   document.getElementById("mario_bankname").value=result[0].Bank_Name;
+				   document.getElementById("mario_accountno").value=result[0].Account_Number;
+				   document.getElementById("mario_bankbranch").value=result[0].Bank_Branch;
+				   document.getElementById("mario_ifsc").value=result[0].Ifsc_code;
+				   if(result[0].Other_Details !="" && result[0].Other_Details != null)
+					{
+						document.getElementById("mario_others").value= result[0].Other_Details;
+					}
+					else
+					{
+						document.getElementById("mario_others").value= "No details";
+					}
+					
+					var s = result[0].Service_Providing;
+					
+					var values = s.split(',');
+					
+					
+					for(i=0;i<values.length;i++)
+					{
+						if(values[i] == 1)
+						{
+							document.getElementById("service1").checked = true;
+						}
+						if(values[i] == 2)
+						{
+							document.getElementById("service2").checked = true;
+						}
+						if(values[i] == 3)
+						{
+							document.getElementById("service3").checked = true;
+						}
+					}
+				
+			   },	
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			  
+			stopLoader();
+			return getNotification();
+		}
+		var Customer_Id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+		
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/customer_notifycount.php",
+				data : "Customer_Id="+Customer_Id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+						if(data != "")
+						{
+							addmsg(data);
+						}
+						setTimeout(
+						waitForMsg,
+						30000
+						);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+			}
+		}
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+				return mario_update();
+			}
+		});
+		/********Code to update details********/
+		function mario_update()
+		{
+			var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+			var phoneRegex = /([0-9\s\-]{7,})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
+			
+			var mario_name = document.getElementById('mario_name').value;
+			var mario_password = document.getElementById('mario_password').value;
+			var mario_email = document.getElementById('mario_email').value;
+			var mario_phone = document.getElementById('mario_phone').value;
+			var mario_bankname = document.getElementById("mario_bankname").value;
+			var mario_accountno = document.getElementById("mario_accountno").value;
+			var mario_bankbranch = document.getElementById("mario_bankbranch").value;
+			var mario_ifsc = document.getElementById("mario_ifsc").value;
+			
+			if(mario_name =='')
+			{
+				alert('Please enter mario name');
+				document.getElementById('mario_name').focus();
+				return false;
+			}
+			if(mario_password =='')
+			{
+				alert('Please enter password');
+				document.getElementById('mario_password').focus();
+				return false;
+			}
+			if(mario_email =='')
+			{
+				alert('Please enter email id');
+				document.getElementById('mario_email').focus();
+				return false;
+			}
+			if(!mario_email.match(emailRegex))
+			{
+				alert('Please enter valid email id');
+				document.getElementById('mario_email').focus();
+				return false;
+			}
+			if(mario_phone =='')
+			{
+				alert('Please enter mobile number');
+				document.getElementById('mario_phone').focus();
+				return false;
+			}
+			if(!mario_phone.match(phoneRegex))
+			{
+				alert('Please enter valid mobile number');
+				document.getElementById('mario_phone').focus();
+				return false;
+			}
+			var user_type = window.localStorage.getItem("user_type");
+			if(user_type == "1")
+			{
+				if (document.getElementById("service1").checked == false && document.getElementById("service2").checked == false && document.getElementById("service3").checked ==false)
+				{
+					alert('Please choose your service');
+					document.getElementByClass('checkbox-n').focus();
+					return false;
+				}
+			}
+			if(mario_bankname =='')
+			{
+				alert('Please enter bank name');
+				document.getElementById('mario_bankname').focus();
+				return false;
+			}
+			if(mario_accountno =='')
+			{
+				alert('Please enter account number');
+				document.getElementById('mario_accountno').focus();
+				return false;
+			}
+
+			if(mario_bankbranch =='')
+			{
+				alert('Please enter bank branch');
+				document.getElementById('mario_bankbranch').focus();
+				return false;
+			}
+
+			if(mario_ifsc =='')
+			{
+				alert('Please enter ifsc code');
+				document.getElementById('mario_ifsc').focus();
+				return false;
+			}
+
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			var Service_type = $.map($(':checkbox[name=service\\[\\]]:checked'), function(n, i){
+					  return n.value;
+				}).join(',');	
+			window.localStorage.setItem("mario_service",Service_type); 
+			
+			var Payment_type = $("input[type='radio'].radioClass:checked").val();
+			
+			var formData = new FormData();
+			formData.append('mario_name', $('#mario_name').val());	
+			formData.append('mario_password', $('#mario_password').val());
+			formData.append('mario_email', $('#mario_email').val());
+			formData.append('mario_phone', $('#mario_phone').val());
+			formData.append('Service_type', Service_type);
+			formData.append('Payment_type', Payment_type);
+			formData.append('mario_bankname', $('#mario_bankname').val());
+			formData.append('mario_accountno', $('#mario_accountno').val());
+			formData.append('mario_bankbranch', $('#mario_bankbranch').val());
+			formData.append('mario_ifsc', $('#mario_ifsc').val());
+			formData.append('mario_others', $('#mario_others').val());
+			formData.append('id', marsession_id);
+			$.ajax({
+				url: 'http://182.73.106.114:8088/Mario_Man/mario_updatedetails.php',
+				type: "POST",
+				data: formData,
+				contentType: false,
+				processData: false,
+				success: function(data) {
+					//alert(data);
+					if(data  != ""){
+								if(data == 1)
+								{
+									navigator.notification.alert("Successfully updated");
+									window.location="user_editprofile.html";
+								}
+								else
+								{
+									alert("Try again! error occured");
+									return false;
+								}
+							}
+				}
+			});
+			
+		}
+		/****************************************/
+		
+		
+		/***Code for getting confirmation dialog box to choose whether camera or file browser**/
+		function confirmselect() 
+		{
+			navigator.notification.confirm(
+				"Choose your option", // the message
+				function( index ) {
+					switch ( index ) {
+						case 1:
+						capturePhoto();
+							// The first button was pressed
+							break;
+						case 2:
+						getPhoto();
+							// The second button was pressed
+							break;
+						case 3:
+							// The third button was pressed
+							break;
+					}
+				},
+				"profile picture",                   // a title
+				[ "Camera", "File"] // text of the buttons
+			);
+		}
+		
+		// A button will call this function
+		// To capture photo
+		function capturePhoto() {
+			// Take picture using device camera
+			navigator.camera.getPicture(uploadPhoto, onFail, { 
+			saveToPhotoAlbum: true,  
+				quality: 50,destinationType: Camera.DestinationType.FILE_URI 
+			});
+		}
+
+		// A button will call this function
+		// To select image from gallery
+		function getPhoto(source) {
+			// Retrieve image file location from specified source
+			navigator.camera.getPicture(uploadPhoto, onFail, {quality: 50,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+			});
+		}
+		
+		function uploadPhoto(imageURI) {
+		
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			
+			var options = new FileUploadOptions();
+			options.fileKey = "file";
+			var userid = '123456';
+			var imagefilename = userid + Number(new Date()) + ".jpg";
+			options.fileName = imagefilename;
+			options.mimeType = "image/jpg";
+
+			var params = new Object();
+			params.imageURI = imageURI;
+			params.marsession_id = sessionStorage.marsession_id;
+			options.params = {marsession_id};
+			options.chunkedMode = false;
+			var ft = new FileTransfer();
+			
+			var url = "http://182.73.106.114:8088/Mario_Man/mario_update_profile.php";
+			
+			document.getElementById("loading_spinner").style.display="block";
+			ft.upload(imageURI, url, win, fail, options, true);
+		}
+		//Success callback
+		function win(r) 
+		{
+			setTimeout(stop, 2000);
+			alert("Image uploaded successfully!!");
+			window.location="user_editprofile.html";
+		}
+		//Failure callback
+		function fail(error) {
+			alert("There was an error in uploading image");
+		}
+		// Called if something bad happens.
+		// 
+		function onFail(message) {
+			alert('Failed because: ' + message);
+		}
+		
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+		
+			window.location.href="index.html";
+		}
+    </script>
+</body>
+
+</html>

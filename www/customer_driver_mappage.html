@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="maploading_spinner" class="map_spinner"></div>	
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>			
+			<div class="page-title"><h1>CHOOSE LOCATION</h1></div>			
+		</div>
+		<h3 align="center">Drag markers to set location</h3>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li><a href="customer_myjobs.html">My Jobs</a></li> 
+				<li>
+					<a href="customer_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	</div>
+	<!--Menu Code -->
+
+	<div class="container">
+		<div id="myMap" style="width:100%;max-width:100%;overflow:hidden;height:400px;color:red;"></div><br/>
+        <div class="login">
+			Pickup address: <textarea id="address" name="address"></textarea>
+			  Drop address: <textarea id="endaddress" name="address"></textarea>
+            <br/>
+			<div class="btn-div">
+				<div class="btn-bg1"><a href="javascript:set_directions()"> SET </a></div>
+			</div>
+		</div>
+	<input type="hidden" id="start_latitude" value=""/>
+	<input type="hidden" id="start_longitude" value=""/>
+	<input type="hidden" id="end_latitude" value=""/>
+	<input type="hidden" id="end_longitude" value=""/>
+	<input type="hidden" id="user_service" value=""/>	
+	<input type="hidden" id="option_driver" value=""/>	
+	
+	</div>	
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script>  
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		function init()
+		{
+			startmapLoader();
+			stopmapLoader();
+			var qryString = window.location.search.substring(1);
+			var service = qryString.split("=");
+			var service_id = service[1];
+			
+			var qryString=window.location.search.substring(1);
+			
+			
+			var  result =qryString.split("&");
+			
+			var service_id = result[0];
+			var service_id_new = service_id.split("=");
+			
+			var driver_option  = result[1];
+			var driver_option_new = driver_option.split("=");
+			
+			$('#user_service').val(decodeURIComponent(service_id_new[1]));
+			$('#option_driver').val(decodeURIComponent(driver_option_new[1]));
+			
+			var options = {
+			  enableHighAccuracy: true,
+			  maximumAge: 3600000
+			}
+			var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+			
+		}
+		/*********************************/
+		
+		var Customer_Id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/customer_notifycount.php",
+				data : "Customer_Id="+Customer_Id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+						if(data != "")
+						{
+							addmsg(data);
+						}
+						setTimeout(
+						waitForMsg,
+						30000
+						);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+			}
+		}
+		function onSuccess(position) {
+			
+			var Latitude = position.coords.latitude;
+			var Longitude = position.coords.longitude;
+			
+			var end_Latitude = position.coords.latitude;
+			var end_Longitude = position.coords.longitude;	
+				
+			var map;
+			var marker;
+			var marker1;
+			var myLatlng = new google.maps.LatLng(Latitude,Longitude);
+			var myLatlng1 = new google.maps.LatLng(end_Latitude,end_Longitude);
+			
+			var geocoder = new google.maps.Geocoder();
+			var infowindow = new google.maps.InfoWindow();
+			
+			var mapOptions = {
+				zoom: 15,
+				center: myLatlng,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+		      
+			  
+            map = new google.maps.Map(document.getElementById("myMap"), mapOptions);
+                
+			marker = new google.maps.Marker({
+				map: map,
+				position: myLatlng,
+				icon:'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FE7569',
+				draggable: true 
+			}); 
+			
+			marker1 = new google.maps.Marker({
+				map: map,
+				position: myLatlng1,			
+				icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+				draggable: true 
+			});   
+ 			   
+			/**********/
+              geocoder.geocode({'latLng': myLatlng }, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#address').val(results[0].formatted_address);
+                            $('#start_latitude').val(marker.getPosition().lat());
+                            $('#start_longitude').val(marker.getPosition().lng());
+							infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker);
+							//-----------------------							
+                        }
+                    }
+                });
+				/**********/
+			geocoder.geocode({'latLng': myLatlng}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#endaddress').val(results[0].formatted_address);
+                            $('#end_latitude').val(marker1.getPosition().lat());
+                            $('#end_longitude').val(marker1.getPosition().lng());
+                            infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker1);
+							//-----------------------							
+                        }
+                    }
+                });
+				/**********/
+                               
+             google.maps.event.addListener(marker, 'dragend', function() {
+
+                geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#address').val(results[0].formatted_address);
+                            $('#start_latitude').val(marker.getPosition().lat());
+                            $('#start_longitude').val(marker.getPosition().lng());
+                            infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker);
+							
+							//-----------						
+                        }
+                    }
+                });
+            });
+			   google.maps.event.addListener(marker1, 'dragend', function() {
+                geocoder.geocode({'latLng': marker1.getPosition()}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            $('#endaddress').val(results[0].formatted_address);
+							$('#end_latitude').val(marker1.getPosition().lat());
+                            $('#end_longitude').val(marker1.getPosition().lng());
+                            infowindow.setContent(results[0].formatted_address);
+                            infowindow.open(map, marker1);							
+							//-----------						
+                        }
+                    }
+                });
+            });	
+			return getNotification();
+		}
+		
+		function onError(error) {
+				navigator.notification.alert("Error occured! Please check your gps settings");
+				window.location.href= "customer_postjobs.html";
+			}	
+		google.maps.event.addDomListener(window, 'load', initialize);
+		
+		function set_directions()
+		{
+			var start_latitude = document.getElementById('start_latitude').value;
+			var start_longitude = document.getElementById('start_longitude').value;
+			
+			var end_latitude = document.getElementById('end_latitude').value;
+			var end_longitude = document.getElementById('end_longitude').value;
+			
+			var address = document.getElementById('address').value;
+			var endaddress=document.getElementById('endaddress').value;
+			var user_service = document.getElementById('user_service').value;
+			
+			var option_driver=document.getElementById('option_driver').value;
+			
+			window.location.href= "customer_driverpage.html?address="+address+"&endaddress="+endaddress+"&start_latitude="+start_latitude+"&start_longitude="+start_longitude+"&end_latitude="+end_latitude+"&end_longitude="+end_longitude+"&user_service="+user_service+"&option_driver="+option_driver;
+		} 
+	</script>
+</body>
+
+</html>

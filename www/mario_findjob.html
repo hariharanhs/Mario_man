@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+	<div id="maploading_spinner" class="map_spinner"></div>
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>FIND JOB</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUs.html">About Us</a></li> 
+				<li><a href="mario_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editmprofile.html">Edit Profile</a></li> 
+				<li><a href="mario_myjobs.html">My Jobs</a></li> 
+				<!--	-->
+				<li>
+					<a href="mario_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	<!--Menu Code -->
+	
+	<div class="container">
+		<div class="login search-input">
+			<input class="search-icon1" id="searchkey" placeholder="Search Your Job ...." type="search">
+			<div class="clear"></div>
+		</div>
+		<div style="width:100%;max-width:100%;overflow:hidden;height:500px;color:red;">
+			<div id="google-maps-display" style="height:100%; width:100%;max-width:100%;">
+			<style>#google-maps-display img{max-width:none!important;background:none!important;}</style>
+		</div>
+	</div>	
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByQxZlZJutSuzrM1_ru1IABvEukZiOywA&callback=initMap"  async defer></script>
+	<script type="text/javascript">
+        //app.initialize();
+		document.addEventListener("deviceready", init, false);
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function logout()
+		{
+			//window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+				var searchkeyword = document.getElementById('searchkey').value;
+				searchkeywordmap(searchkeyword);
+			}
+		});
+		function init()
+		{
+			startmapLoader();
+			/*
+			document.addEventListener("deviceready",function() {
+			  cordova.dialogGPS("Your GPS is Disabled, this app needs to be enable to works.",//message
+								"Use GPS, with wifi or 3G.",//description
+								function(buttonIndex){//callback
+								},
+								  "Please Turn on GPS",//title
+								  ["Cancel","Later","Go"]);//buttons
+			 });
+			 */
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			var mario_service = window.localStorage.getItem("user_service"); 
+			var searchkeyword ="";
+			
+			var options = {
+			  enableHighAccuracy: true,
+			  maximumAge: 3600000
+			}
+			
+		   var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+			
+		   function onSuccess(position) {
+				var Latitude = position.coords.latitude;
+				var Longitude = position.coords.longitude;
+				
+				$.ajax({
+				   url :'http://182.73.106.114:8088/Mario_Man/mario_findjob.php', 	
+				   data:"marsession_id="+marsession_id+"&Mario_speciality="+mario_service+"&Latitude="+Latitude+"&Longitude="+Longitude+"&searchkeyword="+searchkeyword,
+				   type:"post",
+				   success: function(data) {
+				   
+				   //alert(data);
+				   
+				   $("#searchkey").blur(); 
+				   
+					var locationnew ="";
+					var arr = [];
+						var result=JSON.parse(data);
+						var i;
+						
+						for (i = 0; i < result.length; i++) {
+							var Latitude = result[i].Latitude;
+							var Longitude = result[i].Longitude;
+							var job_Id = result[i].Job_Id;
+							var Job_Title = result[i].Job_Title;
+							var title = '<a href= "mario_jobdescription.html?tempjobID ='+job_Id+'">'+Job_Title+'</a>';
+							arr[i] = [title, Latitude, Longitude];
+						}
+						
+						locations = arr;
+						var map = new google.maps.Map(document.getElementById('google-maps-display'), {
+							zoom: 3,
+							center: new google.maps.LatLng(locations[0][1],locations[0][2]),
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						});
+
+						var infowindow = new google.maps.InfoWindow();
+						var marker, i;
+						for (i = 0; i < locations.length; i++) {  
+						  marker = new google.maps.Marker({
+							position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+							icon :'img/man-img.png',
+							map: map
+						  });
+						google.maps.event.addListener(marker, 'click', (function(marker, i) {
+							return function() {
+							  infowindow.setContent(locations[i][0]);
+							  infowindow.open(map, marker);
+							}
+						  })(marker, i));
+						}		
+					},
+				   error:function(error){
+					  navigator.notification.alert("Error occured. Please try again.");
+				   }
+				});	
+				}
+			function onError(error) {
+			  var Latitude = "";
+			  var Longitude = "";
+			  $.ajax({
+				   url :'http://182.73.106.114:8088/Mario_Man/mario_findjob.php', 	
+				   data:"marsession_id="+marsession_id+"&Mario_speciality="+Mario_speciality+"&Latitude="+Latitude+"&Longitude="+Longitude+"&searchkeyword="+searchkeyword,
+				   type:"post",
+				   success: function(data) {
+				   
+				    $("#searchkey").blur(); 
+						//alert(data);
+					var locationnew ="";
+					var arr = [];
+						var result=JSON.parse(data);
+						var i;
+						for (i = 0; i < result.length; i++) {
+							var Latitude = result[i].Latitude;
+							var Longitude = result[i].Longitude;
+							var job_Id = result[i].Job_Id;
+							var Job_Title = result[i].Job_Title;
+							
+							var title = '<a href= "mario_jobdescription.html?tempjobID ='+job_Id+'">'+Job_Title+'</a>';
+							arr[i] = [title, Latitude, Longitude];
+						}
+						
+						locations = arr;
+						var map = new google.maps.Map(document.getElementById('google-maps-display'), {
+							zoom: 3,
+							center: new google.maps.LatLng(locations[0][1],locations[0][2]),
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						});
+
+						var infowindow = new google.maps.InfoWindow();
+						var marker, i;
+						for (i = 0; i < locations.length; i++) {  
+						  marker = new google.maps.Marker({
+							position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+							icon :'img/man-img.png',
+							map: map
+						  });
+						google.maps.event.addListener(marker, 'click', (function(marker, i) {
+							return function() {
+							  infowindow.setContent(locations[i][0]);
+							  infowindow.open(map, marker);
+							}
+						  })(marker, i));
+						}		
+					},
+				   error:function(error){
+					  navigator.notification.alert("Error occured. Please try again.");
+				   }
+				});	
+			}
+			stopmapLoader();
+			return getNotification();
+		}
+		var user_service = window.localStorage.getItem("user_service"); 
+		var marsession_id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/mario_notifycount.php",
+				data : "user_service="+user_service+"&marsession_id="+marsession_id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+					if(data != "")
+					{
+						addmsg(data);
+					}
+					setTimeout(
+					waitForMsg,
+					30000
+					);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+				
+			}
+		}
+		
+		function searchkeywordmap(searchkeyword)
+		{
+			var Latitude = "";
+			var Longitude = "";
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			var Mario_speciality = window.localStorage.getItem("user_service"); 
+			
+			$.ajax({
+			   url :'http://182.73.106.114:8088/Mario_Man/mario_findjob.php', 	
+			   data:"marsession_id="+marsession_id+"&Mario_speciality="+Mario_speciality+"&Latitude="+Latitude+"&Longitude="+Longitude+"&searchkeyword="+searchkeyword,
+			   type:"post",
+			   success: function(data) {
+			   //alert(data);
+			   $("#searchkey").blur(); 
+			      if(data != 0)
+				  {
+					var locationnew ="";
+					var arr = [];
+						var result=JSON.parse(data);
+						var i;
+						for (i = 0; i < result.length; i++) {
+							var Latitude = result[i].Latitude;
+							var Longitude = result[i].Longitude;
+							var job_Id = result[i].Job_Id;
+							var Job_Title = result[i].Job_Title;
+							var title = '<a href= "mario_jobdescription.html?tempjobID ='+job_Id+'">'+Job_Title+'</a>';
+							arr[i] = [title, Latitude, Longitude];
+							
+						}
+						
+						locations = arr;
+						var map = new google.maps.Map(document.getElementById('google-maps-display'), {
+							zoom: 3,
+							center: new google.maps.LatLng(locations[0][1],locations[0][2]),
+							mapTypeId: google.maps.MapTypeId.ROADMAP
+						});
+
+						var infowindow = new google.maps.InfoWindow();
+						var marker, i;
+						for (i = 0; i < locations.length; i++) {  
+						  marker = new google.maps.Marker({
+							position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+							icon :'img/man-img.png',
+							map: map
+						  });
+						window.localStorage.setItem("searchkeyword","");
+						google.maps.event.addListener(marker, 'click', (function(marker, i) {
+							return function() {
+							  infowindow.setContent(locations[i][0]);
+							  infowindow.open(map, marker);
+							}
+						  })(marker, i));
+						}	
+					}
+					else
+					{
+						navigator.notification.alert("No jobs found with your search keyword");
+						return init();
+					}
+				},
+			   error:function(error){
+				  navigator.notification.alert("Error occured. Please try again.");
+			   }
+			});
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+		
+			window.location.href="mario_dashboard.html";
+		}
+		
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()" class="bgcolor">
+<div id="loading_spinner" class="loading_spinner"></div>	
+<div id="page">
+		<div class="header">
+
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>EDIT JOB</h1></div>
+			
+		</div>
+		<nav id="menu">
+		<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li><a href="customer_myjobs.html">My Jobs</a></li> 
+				<li>
+					<a href="customer_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+		</ul>
+	</nav>
+</div>
+<div>
+	<div class="container">
+			<div class="login">
+				<form>
+					<h3>Job Title</h3>
+					<input type="text" id="job_title" name="job_title" placeholder="Enter your job title"/>
+					
+					<h3>Job Description</h3>
+					<textarea id="job_description" name="job_description" placeholder="Enter your job description"></textarea>
+					
+					<h3>Job Time</h3>
+					<input type="time" id="job_time" name="job_time"/>
+					
+					<h3>Job Pay</h3>
+					<input type="text" id="job_pay" name="job_pay" placeholder="Enter your amount"/>
+					
+					<h3>Location</h3>
+					<textarea id="job_location" name="job_location" placeholder="Enter your Location"></textarea>
+					
+					<h3>Expire Date</h3>
+					<input type="date" id="job_expiredate" name="job_expiredate" />
+					
+					<h3>Job Status</h3>
+					<select id="job_status" name="job_status">
+							<option value="1">Active</option>
+							<option value="2">Inactive</option>
+					</select>
+					
+					<div class="btn-div">
+					  <div class="btn-bg2"><a href="javascript:update_job()">UPDATE</a></div>
+					</div>
+				</form>
+			</div>
+	</div>
+</div>
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		
+		function init()
+		{
+			startLoader();
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_editjob.php', 	
+			   data:"tempjobID="+tempjobID,
+			   type: "post",
+			   success: function(data) {
+					var openP = JSON.parse(data);
+					document.getElementById("job_title").value = openP[0].Job_Title;
+					document.getElementById("job_description").value = openP[0].Job_description;
+					document.getElementById("job_time").value = openP[0].Job_Time;
+					document.getElementById("job_pay").value = openP[0].Job_Pay;
+					document.getElementById("job_location").value = openP[0].Location;
+					document.getElementById("job_expiredate").value = openP[0].Expire_date;
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			   stopLoader();
+		return getNotification();
+		}
+		/*********************************/
+		
+		var Customer_Id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/customer_notifycount.php",
+				data : "Customer_Id="+Customer_Id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+						if(data != "")
+						{
+							addmsg(data);
+						}
+						setTimeout(
+						waitForMsg,
+						30000
+						);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+			}
+		}
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+			 return postjob();
+			}
+		});
+		function update_job()
+		{
+			
+			var job_title = document.getElementById('job_title').value;
+			var job_description = document.getElementById('job_description').value;
+			var job_pay = document.getElementById('job_pay').value;
+			var job_location = document.getElementById('job_location').value; 
+			
+			if(job_title =='')
+			{
+				alert('Please enter job title');
+				document.getElementById('job_title').focus();
+				return false;
+			}
+			if(job_description =='')
+			{
+				alert('Please enter job description');
+				document.getElementById('job_description').focus();
+				return false;
+			}
+			if(job_pay < "$15")
+			{
+				alert('Sorry ! Minimum payable amount is $15');
+				document.getElementById('job_pay').focus();
+				return false;
+			}
+			if(job_location =='')
+			{
+				alert('Please enter location');
+				document.getElementById('job_location').focus();
+				return false;
+			}
+			
+			
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			
+			var formData = new FormData();
+			
+			formData.append('tempjobID',tempjobID);
+			formData.append('job_title', $('#job_title').val());
+			formData.append('job_description', $('#job_description').val());
+			formData.append('job_time', $('#job_time').val());	
+			formData.append('job_pay', $('#job_pay').val());	
+			formData.append('job_location', $('#job_location').val());
+			formData.append('job_expiredate', $('#job_expiredate').val());
+			formData.append('job_status', $('#job_status').val());
+			
+			$.ajax({
+				url: 'http://182.73.106.114:8088/Mario_Man/customer_updatejob.php',
+				type: "POST",
+				data: formData,
+				async: false,
+				contentType: false,
+				processData: false,
+				success: function(data) { 
+				//alert(data);
+					if(data  != ""){
+						if(data == 1)
+							{
+								navigator.notification.alert("Successfully updated");
+								window.location.href="customer_myjobs.html";
+							}
+							else
+							{
+								alert("Try again! error occured");
+								return false;
+							}
+							}
+				},
+				error:function(err){
+					alert(err.message);
+				},
+			});
+		}
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+    </script>
+</body>
+
+</html>

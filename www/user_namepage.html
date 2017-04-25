@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" />  
+	<!-- Mario Man CSS , Script Ends here -->
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>User Details</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+</div>
+<div id="loading_spinner" class="loading_spinner"></div>	
+	<div class="mario-detail-head">
+		<div class="mariohead-profile-img text-center">
+			<img src="img/pro-ava.png" id="my_image" onclick="confirmselect()" >
+		</div>
+		<div class="uploadWrapper" id="text_profile">
+			<p>Add Your Picture</p>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="container">
+		<div class="login">
+			<form>
+				<h3 style="color:#555555; margin:0; padding:0;">User Name</h3>
+				<br>
+				<input type="text" id="user_name" name="user_name" placeholder="Enter your name"/>	
+				<div id="service_div" style="display:none;">
+					<ul class="radio">
+						<h3 style="color:#555555; margin:15px 0; padding:0;">Choose Your Service</h3>
+						<li>
+							<input type="checkbox" class="checkbox-n" id="service1" name="service[]" value="1">
+							<label for="service1">Driver / Pillon Rider</label>
+						</li>
+						<li>
+							<input type="checkbox" class="checkbox-n" id="service2" name="service[]" value="2">
+							<label for="service2">Run Errands</label>
+						</li>
+						<li>
+						<input type="checkbox" class="checkbox-n" id="service3" name="service[]" value="3">
+						<label for="service3">Handyman</label>
+						</li>
+						<div class="clear"></div>
+					</ul>
+					<ul class="radio">
+					<h3 style="color:#555555; margin:15px 0; padding:0;">Choose Your Payment Method</h3>
+					<li>
+						<input type="checkbox" class="checkbox-n" name="group_new[]" id="radio-4" value="1">
+						<label for="radio-4">Credit / Debit Card</label>
+						<div class="check"></div>
+						<div class="clear"></div>
+					</li>
+					<li>
+						<input type="checkbox" class="checkbox-n" name="group_new[]" id="radio-5" value="2">
+						<label for="radio-5">Paypal</label>
+						<div class="check"></div>
+						<div class="clear"></div>
+					</li>
+					<div class="clear"></div>
+				</ul>
+				</div>
+
+				<div class="btn-div" style="text-align:center">
+					<div class="btn-bg2"><a href="javascript:save_details()"> SAVE </a></div>
+				</div>	
+				<input type="hidden" id="insert_update" name="insert_update"/>	
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+
+
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		document.addEventListener("deviceready", init, false);
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function init()
+		{	
+			startLoader();
+			stopLoader();
+            
+            
+                      
+			var user_name = window.localStorage.getItem("user_name"); 
+			
+			if(user_name != null && user_name != "")
+			{
+				window.location.href="user_bankdetails.html";
+			}
+			
+			var user_type = window.localStorage.getItem("user_type");
+			//alert(user_type);
+			if(user_type == 1)
+			{
+				document.getElementById('service_div').style.display = "block";
+			}
+			var user_id = window.localStorage.getItem("user_id");
+			//alert(user_id);
+			$.ajax({
+						url: 'http://182.73.106.114:8088/Mario_Man/user_getdetails.php',
+						type: "POST",
+						data: "user_id="+user_id,
+						async: false,
+						success: function(data) { 
+						if(data != 0)
+							{
+								var result = data.split('@@');
+								var user_info = result[0];
+								var user_info_new = JSON.parse(user_info);
+								var user_detail = result[1];
+								var user_details_new = JSON.parse(user_detail);
+									
+									if(user_details_new[0].Profile_Picture != "")
+									{
+										window.localStorage.setItem("user_profile", user_details_new[0].Profile_Picture); 
+										$("#my_image").attr("src", "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+user_details_new[0].Profile_Picture);
+										document.getElementById('insert_update').value = "update";
+										document.getElementById('text_profile').style.display = "none";
+									}
+									if(user_details_new[0].User_Name != "") // check whether the user give their details like name, payment type 
+										{
+											window.localStorage.setItem("user_name", user_details_new[0].User_Name); 
+											window.localStorage.setItem("user_service",user_details_new[0].Service_Providing); 
+											window.localStorage.setItem("user_paymenttype", user_details_new[0].Payment_Type); 
+											window.localStorage.setItem("user_profile", user_details_new[0].Profile_Picture); 
+											if(user_details_new[0].Bank_Name != "" && user_details_new[0].Bank_Name != null) // check whether the user give their bank details
+											{
+												window.localStorage.setItem("user_bankname", user_details_new[0].Bank_Name); 
+												if(user_info_new[0].User_Type == "1")
+												{
+													window.location.href="mario_dashboard.html";  // redirect to mario_dashboard page if user type is 1
+												}
+												if(user_info_new[0].User_Type == "2")
+												{
+													window.location.href="customer_dashboard.html"; // redirect to customer_dashboard page if user type is 2
+												}
+											}
+											else
+											{
+												window.location.href="user_bankdetails.html"; // redirect to bankdetails page if there is no bank details
+											}
+											
+										}
+							}
+							else
+							{
+								window.location.href="user_signin.html"; // redirect to login page if there is no details
+							}
+						},
+						error:function(err){
+							alert(err.message);
+						},
+					});
+			
+		}
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+				return save_details();
+			}
+		});
+		function save_details()
+		{
+			var user_name = document.getElementById('user_name').value;
+			var profile = document.getElementById('insert_update').value;
+			if(profile =='')
+			{
+				alert('Please choose your profile picture');
+				return false;
+			}
+			if(user_name =='')
+			{
+				alert('Please enter name');
+				document.getElementById('user_name').focus();
+				return false;
+			}
+			var user_type = window.localStorage.getItem("user_type");
+			if(user_type == "1")
+			{
+				var flag= 0;
+				var service_new = document.getElementsByName('service[]');
+				
+				for(var i=0 ; i < service_new.length; i++)
+				{
+					if (service_new[i].checked == true)
+					{
+						flag = 1;
+						break;
+					}
+				}
+				if(flag == 0)
+				{
+					alert('Please choose your service');
+					document.getElementById('service1').focus();
+					return false;
+				}
+			}
+			var user_type = window.localStorage.getItem("user_type");
+			if(user_type == '1') 
+			{
+				var flag =0;
+				var group_new = document.getElementsByName('group_new[]');
+				alert(JSON.stringify(group_new));
+				for(var i=0;i<group_new.length;i++){
+					if(group_new[i].checked == true){
+						flag =1;
+						break;
+					}
+					
+				}				
+				if(flag == 0){
+					alert('Please choose your payment method');
+					document.getElementById('radio-4').focus();
+					return false;
+				}
+			}
+			else
+			{	
+			
+				var Service_type = $.map($(':checkbox[name=service\\[\\]]:checked'), function(n, i){
+					  return n.value;
+				}).join(',');	
+				
+				window.localStorage.setItem("mario_service",Service_type); 
+				
+				var Payment_type = $.map($(':checkbox[name=group_new\\[\\]]:checked'), function(n, i){
+					  return n.value;
+				}).join(',');	
+				
+				
+				//var Payment_type = $("input[type='radio'].radioClass:checked").val();
+				var user_id = window.localStorage.getItem("user_id"); 
+				var user_type = window.localStorage.getItem("user_type");
+				
+				var formData = new FormData();
+				formData.append('Mario_name', $('#user_name').val());
+				formData.append('Service_type',Service_type);	
+				formData.append('Payment_type', Payment_type);
+				formData.append('User_Id', user_id);
+				formData.append('User_Type', user_type);
+				formData.append('insert_type', $('#insert_update').val());
+				
+				alert(formData);
+				
+				$.ajax({
+					url: 'http://182.73.106.114:8088/Mario_Man/user_details.php',
+					type: "POST",
+					data: formData,
+					async: false,
+					contentType: false,
+					processData: false,
+					success: function(data) { 
+					alert(data);
+						if(data  != ""){
+							if(data == 0)
+							{
+								alert("Error occured! Try again");
+								return false;
+							}
+							else
+							{
+								window.localStorage.setItem("user_name", $('#user_name').val()); 
+								window.localStorage.setItem("user_service",Service_type); 
+								window.localStorage.setItem("Payment_type", Payment_type); 
+								window.location.href="user_bankdetails.html";
+							}
+						}
+					},
+					error:function(err){
+						alert(err.message);
+					},
+				});
+			}
+		}
+		
+		/***Code for getting confirmation dialog box to choose whether camera or file browser**/
+		  function confirmselect() 
+		  {
+		  navigator.notification.confirm(
+			  "Choose your option", // the message
+			function( index ) {
+				switch ( index ) {
+					case 1:
+					capturePhoto();
+						// The first button was pressed
+						break;
+					case 2:
+					getPhoto();
+						// The second button was pressed
+						break;
+					case 3:
+						// The third button was pressed
+						break;
+				}
+			},
+			"profile picture",                   // a title
+			[ "Camera", "File"] // text of the buttons
+		);
+		}
+		
+		// A button will call this function
+		// To capture photo
+		function capturePhoto() {
+			// Take picture using device camera
+			navigator.camera.getPicture(uploadPhoto, onFail, { 
+			saveToPhotoAlbum: true,  
+				quality: 50,destinationType: Camera.DestinationType.FILE_URI 
+			});
+		}
+
+		// A button will call this function
+		// To select image from gallery
+		function getPhoto(source) {
+			// Retrieve image file location from specified source
+			navigator.camera.getPicture(uploadPhoto, onFail, {quality: 50,
+				destinationType: navigator.camera.DestinationType.FILE_URI,
+				sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+			});
+		}
+		
+		function uploadPhoto(imageURI) {
+			
+			var image = document.getElementById('my_image');
+			image.src = imageURI;
+			
+			var marsession_id = window.localStorage.getItem("user_id"); 
+			var insert_type = $('#insert_update').val();
+			var options = new FileUploadOptions();
+			options.fileKey = "file";
+			var userid = '123456';
+			var imagefilename = userid + Number(new Date()) + ".jpg";
+			options.fileName = imagefilename;
+			options.mimeType = "image/jpg";
+
+			var params = new Object();
+			params.imageURI = imageURI;
+			params.marsession_id = sessionStorage.marsession_id;
+			params.insert_type = insert_type;
+			options.params = {marsession_id,insert_type};
+			options.chunkedMode = false;
+			var ft = new FileTransfer();
+			
+			var url = "http://182.73.106.114:8088/Mario_Man/user_insert_profile.php";
+			
+			document.getElementById("loading_spinner").style.display="block";
+			ft.upload(imageURI, url, win, fail, options, true);
+		}
+		//Success callback
+		function win(r) 
+		{
+			//alert(JSON.stringify(r));
+			setTimeout(stop, 2000);
+			
+			document.getElementById('insert_update').value = "update";
+			document.getElementById('text_profile').style.display = "none";
+			
+			alert("Image inserted successfully!!");
+			
+			//window.location="user_namepage.html";
+		}
+		//Failure callback
+		function fail(error) {
+			alert("There was an error in uploading image");
+		}
+		// Called if something bad happens.
+		// 
+		function onFail(message) {
+			alert('Failed because: ' + message);
+		}
+		
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.location.href="user_choicepage.html";
+		}
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+	</script>
+</body>
+
+</html>

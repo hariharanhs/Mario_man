@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()"  class="bgcolor">
+	<div id="loading_spinner" class="loading_spinner"></div>
+	<div class="header">
+		<a class="back" href="javascript:goback()"></a>
+	</div>
+	<div>
+		<div class="container">
+			<div class="logo"><img src="img/logo.png"/></div>
+			<div class="login">
+				<form>
+					<h3>Email Address</h3>
+					<input type="email" id="user_emailid" name="user_emailid" placeholder="Enter your email id"/>
+					<h3>Password</h3>
+					<input type="password" id="user_password" name="user_password" placeholder="Enter your password"/>
+                    <h3>Confirm Password</h3>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Reenter your password"/>
+					<h3>Mobile Number</h3>
+					<input type="number" id="user_mobileno" name="user_mobileno" placeholder="Enter your mobile number"/>
+					<div class="btn-div">
+					  <div class="btn-bg2"><a href="javascript:user_signup()">Submit</a></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.2.0.js"></script>
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		function init()
+		{
+			startLoader();
+			stopLoader();
+		}
+		function goback()
+		{
+			window.location.href="user_signin.html";
+		}
+
+		$('input').keypress(function(e) {
+			var code = (e.keyCode ? e.keyCode : e.which);
+			if ((code==13) || (code==10))
+			{
+				return user_signup();
+			}
+		});
+		function user_signup()
+		{
+			var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+			var phoneRegex = /([0-9\s\-]{7,})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
+			var user_emailid = document.getElementById('user_emailid').value;
+			var user_password = document.getElementById('user_password').value;
+        	var confirm_password = document.getElementById('confirm_password').value;
+			var user_mobileno = document.getElementById('user_mobileno').value;
+			
+			if(user_emailid =='')
+			{
+				alert('Please enter email id');
+				document.getElementById('user_emailid').focus();
+				return false;
+			}
+			if(!user_emailid.match(emailRegex))
+			{
+				alert('Please enter valid email id');
+				document.getElementById('user_emailid').focus();
+				return false;
+			}
+			if(user_password =='')
+			{
+				alert('Please enter password');
+				document.getElementById('user_password').focus();
+				return false;
+			}
+            if(user_password != confirm_password){
+                    alert('Password does not match');
+                    document.getElementById('confirm_password').focus();
+                    return false;                
+            }            
+			if(user_mobileno =='')
+			{
+				alert('Please enter mobile number');
+				document.getElementById('user_mobileno').focus();
+				return false;
+			}
+			if(!user_mobileno.match(phoneRegex))
+			{
+				alert('Please enter valid mobile number');
+				document.getElementById('user_mobileno').focus();
+				return false;
+			}
+			
+			var formData = new FormData();
+			formData.append('user_emailid', $('#user_emailid').val());	
+			formData.append('user_password', $('#user_password').val());
+			formData.append('user_mobileno', $('#user_mobileno').val());
+			
+			$.ajax({
+				url: 'http://182.73.106.114:8088/Mario_Man/user_signup.php',
+				type: "POST",
+				data: formData,
+				async: false,
+				contentType: false,
+				processData: false,
+				success: function(data) { 
+				//alert(data);
+					if(data  != ""){
+						if(data == 1)
+						{
+							navigator.notification.alert("Successfully created");
+							window.location.href="user_signin.html";
+						}
+						if(data == 2)
+						{
+							navigator.notification.alert("Given phone number already exists!");
+							document.getElementById('user_mobileno').focus();
+							return false;
+						}
+					}
+					else
+					{
+						alert("Try again! error occured");
+						return false;
+					}
+				},
+				error:function(err){
+					alert(err.message);
+				},
+			});
+			
+		}
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.location.href="user_signin.html";
+		}
+    </script>
+</body>
+
+</html>

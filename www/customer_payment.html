@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/payment-style.css" />
+	<link href="css/rating.css" rel="stylesheet" type="text/css">
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="loading_spinner" class="loading_spinner"></div>
+<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>PAYMENT</h1></div>
+		</div>
+		<nav id="menu">
+		<ul>
+			<li><a href="AboutUsC.html">About Us</a></li> 
+			<li><a href="customer_dashboard.html">Dashboard</a></li> 
+			<li><a href="user_editprofile.html">Edit Profile</a></li> 
+			<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+			<li><a href="customer_myjobs.html">My Jobs</a></li> 
+			<li>
+				<a href="customer_notificationcenter.html">
+					<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+					Notifications
+				</a>
+			</li>
+			<li><a href="javascript:logout()">Log Out</a></li>
+		</ul>
+	</nav>
+</div>
+
+<div class="container">
+	<p>Select one of these payment methods</p>
+	  <div class="alternate-payment">
+		<button type="button" id="buyNowBtn" class="btn btn-paypal" onclick="paypal_payment()">Paypal</button>
+		<button type="button" id="card_button" class="btn btn-coinbase">Card Payment</button>
+	  </div>
+	  <div id="card_content" style="display:none;">
+		  <p>Enter your card information</p>
+		  <form class="ccjs-card">
+			<div class="row">
+			  <fieldset class="number number3">
+				<label class="ccjs-number">Card Number
+				  <input name="cc-number" placeholder="•••• •••• •••• ••••" id="ccnumber" class="ccjs-number"/>
+				</label>
+			  </fieldset>
+			  <fieldset class="security">
+				<label class="ccjs-csc int-wi">Security Code
+				  <input name="csc" id="csc" placeholder="•••" class="ccjs-csc"/>
+				</label>
+			  </fieldset>
+			  <!--button.ccjs-csc-help(type='button') ?-->
+			</div>
+			<div class="row">
+			  <fieldset class="name">
+				<label class="ccjs-name">Name on Card
+				  <input name="cc-name" id="ccname" placeholder="John Dough" class="ccjs-name"/>
+				</label>
+			  </fieldset>
+			  <fieldset class="ccjs-expiration">
+				<legend class="expiration">Expiration</legend>
+				<div class="row">
+				  <select name="month" id="month" class="ccjs-month">
+					<option selected="" disabled="">MM</option>
+					<option value="01">01</option>
+					<option value="02">02</option>
+					<option value="03">03</option>
+					<option value="04">04</option>
+					<option value="05">05</option>
+					<option value="06">06</option>
+					<option value="07">07</option>
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+				  </select>
+				  <select name="year" id="year" class="ccjs-year">
+					<option selected="" disabled="">YY</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+					<option value="24">24</option>
+					<option value="25">25</option>
+				  </select>
+				</div>
+			  </fieldset>
+			</div>
+			<select name="card-type" id="cardtype" class="ccjs-hidden-card-type">
+			  <option value="amex" class="ccjs-amex">American Express</option>
+			  <option value="discover" class="ccjs-discover">Discover</option>
+			  <option value="mastercard" class="ccjs-mastercard">MasterCard</option>
+			  <option value="visa" class="ccjs-visa">Visa</option>
+			  <option value="diners-club" class="ccjs-diners-club">Diners Club</option>
+			  <option value="jcb" class="ccjs-jcb">JCB</option>
+			  <!-- <option value="laser" class="laser">Laser</option>-->
+			  <!-- <option value="maestro" class="maestro">Maestro</option>-->
+			  <!-- <option value="unionpay" class="unionpay">UnionPay</option>-->
+			  <!-- <option value="visa-electron" class="visa-electron">Visa Electron</option>-->
+			  <!-- <option value="dankort" class="dankort">Dankort</option>-->
+			</select>
+		  </form>
+		 <button type="button" class="btn btn-primary" onclick="payment_function()">Checkout</button>
+	</div>	
+	<div class="clear"></div>
+</div>
+
+
+	<script type="text/javascript" src="cordova.js"></script>    	
+	<script type="text/javascript" src="js/paypal-mobile-js-helper.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>	
+	<script type="text/javascript" src="js/jquery-latest.js"></script> 
+	<script src="js/jquery-2.2.3.min.js"></script>  
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script> 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  
+	<script type="text/javascript" src="js/rating.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}	
+		$(function() {
+			//$('nav#menu').mmenu();
+			$("button#card_button").click(function(){
+				//$('#card_content').toggle(1000);
+				$("#card_content").show(1000, function(){
+					document.getElementById('card_content').style.display = "block";
+				});
+			});
+		});
+		function init()
+		{
+			//startLoader();
+			
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			var Customer_Id = window.localStorage.getItem("user_id"); 
+			
+			
+			//stopLoader();
+		}
+		function payment_function()
+		{
+			
+			var ccnumber =  document.getElementById('ccnumber').value;
+			var csc =  document.getElementById('csc').value;
+			var ccname =  document.getElementById('ccname').value;
+			var month =  document.getElementById('month').value;
+			var year =  document.getElementById('year').value;
+			var cardtype =  document.getElementById('cardtype').value;
+			
+			if(ccnumber =='')
+			{
+				alert('Please enter your card number');
+				document.getElementById('cc-number').focus();
+				return false;
+			}
+			if(csc =='')
+			{
+				alert('Please enter your security code');
+				document.getElementById('csc').focus();
+				return false;
+			}
+			if(ccname =='')
+			{
+				alert('Please enter your name');
+				document.getElementById('cc-name').focus();
+				return false;
+			}
+			if(month =='')
+			{
+				alert('Please select card expire month');
+				document.getElementById('month').focus();
+				return false;
+			}
+			if(year =='')
+			{
+				alert('Please select card expire year');
+				document.getElementById('year').focus();
+				return false;
+			}
+			if(cardtype =='')
+			{
+				alert('Please enter name');
+				document.getElementById('cardtype').focus();
+				return false;
+			}
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.localStorage.setItem("tempmarioID","");
+			window.location.href="customer_myjobs.html";
+		}
+		//============================Payment gatweway(PayPal)=============
+		alert('0');
+		document.addEventListener("deviceready", this.onDeviceReady, false);
+		function onDeviceReady()
+			{
+				alert("App is loading");
+				initPaymentUI();      
+
+			}
+
+		function initPaymentUI() {
+				alert("12");
+			var clientIDs = {"PayPalEnvironmentSandbox": "AeNR1qm3vDJvk89bi6A4M1U2chytDS5d9o4bN8kePPNn839Aqow7QpGnAmgwTrIjdXlexZLmqbRNL1Bx"};
+			alert("clientIDs: "+clientIDs);
+			var f=JSON.stringify(clientIDs);
+			alert("After Stringify:"+f);
+			//alert(PayPalMobile);
+			// console.log(app.onPayPalMobileInit);
+			// console.log(PayPalMobile.init(clientIDs,app.onPayPalMobileInit));
+			// app.onPayPalMobileInit();
+			PayPalMobile.init(clientIDs,onPayPalMobileInit());
+
+		}
+
+		function onSuccesfulPayment(payment) {
+			alert("Success");
+			alert(JSON.stringify(payment,null,4));
+			// console.log("payment success: " + JSON.stringify(payment, null, 4));
+		}
+		function onFuturePaymentAuthorization(authorization) {
+			alert(JSON.stringify(authorization));
+			// console.log("authorization: " + JSON.stringify(authorization, null, 4));
+		}
+		function createPayment () {
+			// for simplicity use predefined amount
+			alert("IT is in Create Payement");
+			var paymentDetails = new PayPalPaymentDetails("1.50", "0.40", "0.05");
+			var payment = new PayPalPayment("1.95", "USD", "split Sauce", "Sale", paymentDetails);
+			alert(payment);
+			return payment;
+		}
+		function configuration() {
+			// for more options see `paypal-mobile-js-helper.js`
+			alert("It is in config function :");
+			var config = new PayPalConfiguration({merchantName: "My test shop", merchantPrivacyPolicyURL: "https://mytestshop.com/policy", merchantUserAgreementURL: "https://mytestshop.com/agreement"});
+			// console.log(config);
+			var p=JSON.stringify(config);
+			// console.log(p);
+			alert(p)
+			return config;
+		}
+		function onPrepareRender() {
+				// buttons defined in index.html
+				//  <button id="buyNowBtn"> Buy Now !</button>
+				//  <button id="buyInFutureBtn"> Pay in Future !</button>
+				alert("It is in PrepareREnder Function");
+				var buyNowBtn = document.getElementById("buyNowBtn");
+				var buyInFutureBtn = document.getElementById("buyInFutureBtn");
+				
+				buyNowBtn.onclick = function(e) {
+					// single payment
+					alert('21');
+					console.log(PayPalMobile);
+					alert(PayPalMobile);
+					PayPalMobile.renderSinglePaymentUI(createPayment(),onSuccesfulPayment(), onUserCanceled());
+				};
+
+				buyInFutureBtn.onclick = function(e) {
+					// future payment
+					alert('22');
+					PayPalMobile.renderFuturePaymentUI(onFuturePaymentAuthorization(),onUserCanceled);
+				};
+		}
+		function onPayPalMobileInit() {
+			alert('123');
+			// must be called
+			// use PayPalEnvironmentNoNetwork mode to get look and feel of the flow
+			PayPalMobile.prepareToRender("PayPalEnvironmentSandbox",configuration(),onPrepareRender());
+		}
+		function onUserCanceled(result) {
+			alert(result);
+		}
+		//============================Ends=================================
+	
+	</script>
+</body>
+
+</html>

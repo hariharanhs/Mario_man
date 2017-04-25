@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link rel="stylesheet" type="text/css" href="css/mycss.css" /> 
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="loading_spinner" class="loading_spinner">&nbsp;</div>
+<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>MARIO LIST</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="AboutUs.html">About Us</a></li> 
+				<li><a href="user_editmprofile.html">Edit Profile</a></li> 
+				<li><a href="myjobs.html">My Jobs</a></li> 
+				<li><a href="postjob.html">Post Jobs</a></li> 
+				<li><a href="#">Rating &amp; Review</a></li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+</div>
+	
+	<div class="profile">
+		<div class="profile-contant">
+			<div class="profile-img pr-bg pr-bor-bt">
+				<img class="mar-b15 mar-tp20 br" id="marioprofile"/>
+				<h3 class="title mar-b15"><span style="color:#fff" id="marioname"></span></h3>
+				<div class="rate-star">
+					<span><img src="img/star-new-cr.png"></span>
+					<span><img src="img/star-new-cr.png"></span>
+					<span><img src="img/star-new-cr.png"></span>
+					<span><img src="img/star-new.png"></span>
+					<span><img src="img/star-new.png"></span>
+					<div class="clear"></div>
+				</div>
+			</div>
+			<div class="content-box">
+				<div class="content-box1">
+					<h5>Profile View</h5>
+				</div>
+				<div class="content-box1" style="height:78px;">
+					<h5></h5>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="container">
+				<h3 class="title"><span>Profile Information </span></h3>
+				<div class="login">
+					<form>
+						<h3 class="bor">Email ID: <span class="view-h3" id="emailid"></span></h3>
+						<h3 class="bor">Phone: <span class="view-h3" id="phone"></span></h3>
+						<h3 class="bor">Location: <span class="view-h3" id="location"></span></h3>
+						<h3 class="bor">Speciality: <span class="view-h3" id="speciality"></span></h3>
+					</form>
+				</div>
+			</div>
+			<div class="btn-div">
+					  <!-- <div class="btn-bg1"><a href="#">Find Job</a></div> -->
+					  <div class="btn-bg2"><a href="javascript:awardmario()">Award</a></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function init()
+		{
+			startLoader();
+			stopLoader();
+			var tempjobID = window.localStorage.getItem("tempjobID"); 
+			var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/viewmariodetail.php', 	
+			   data:"tempmarioID="+tempmarioID+"&tempjobID="+tempjobID,
+			   type: "post",
+			   success: function(data) {
+				//alert(data);
+				var openP =JSON.parse(data);
+							document.getElementById("marioname").innerHTML = openP[0].Mario_Name;
+							document.getElementById("emailid").innerHTML = openP[0].Email_Id;
+							document.getElementById("phone").innerHTML = openP[0].Phone_Number;
+							document.getElementById("location").innerHTML = openP[0].Address;
+							document.getElementById("speciality").innerHTML = openP[0].Speciality;
+							$("#marioprofile").attr("src", "http://182.73.106.114:8088/Mario_Man/MarioProfile/"+openP[0].Mario_Profile);
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+		}
+		function awardmario()
+		{
+		var tempjobID = window.localStorage.getItem("tempjobID"); 
+		var tempmarioID = window.localStorage.getItem("tempmarioID"); 
+			$.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/awardjob.php', 	
+			   data:"tempjobID="+tempjobID+"&tempmarioID="+tempmarioID,
+			   type: "post",
+			   success: function(data) {
+			  // alert(data);
+			   if(data != 0)
+				{
+					navigator.notification.alert("Successfully awarded");
+					window.localStorage.setItem("tempmarioID","");
+					window.location.href="jobmariolist.html";
+				}
+				else
+				{
+					navigator.notification.alert("Try again");
+				}
+				
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+		}
+		
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+			window.localStorage.setItem("tempmarioID","");
+			window.location.href="jobmariolist.html";
+		}
+	
+	</script>
+</body>
+
+</html>

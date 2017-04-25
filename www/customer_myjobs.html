@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body onload="init()">
+<div id="page">
+		<div class="header">
+
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>MY JOB</h1></div>
+			
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li>
+					<a href="customer_notificationcenter.html">
+						<div class="button_badge1" id="notifynumbermenu" style="display:none;"></div>
+						Notifications
+					</a>
+				</li>
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+</div>
+<div id="loading_spinner" class="loading_spinner"></div>		
+     <div class="container">
+
+	        <div class="login search-input">
+			 <a href="javascript:searching()"><input class="search-icon1" id="searchkey" placeholder="Search Your Job ...." type="search"></a>	
+			 <div class="clear"></div>
+	        </div>
+			
+			<div id="jobdetails">
+			</div>
+			<form name="jobidform" id="jobidform" method="get" action="jobmariolist.html">
+				<input type="hidden" id="jobid" value="">
+			</form>
+			
+     </div>		
+	
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		document.addEventListener("deviceready", init, false);
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}	
+		function getmarios(id)
+		{
+				window.localStorage.setItem("tempjobID",id);
+				window.location.href="customer_appliedmario.html";
+		}	
+		function init()
+		{
+			startLoader();
+			
+			var searchkey = document.getElementById("searchkey").value;
+			var cussession_id = window.localStorage.getItem("user_id"); 
+			 $.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_getmyjobs.php', 	
+			   data:"cussession_id="+cussession_id+"&searchkeyword="+searchkey,
+			   type: "post",
+			   success: function(data) {
+			   //alert(data);
+			   if(data != 0)
+			   {
+			    var result=JSON.parse(data);
+							var resultnew = result.data;
+							var mariocount = result.mariocount;
+							var Award_status = result.Award_status;
+							var i;
+							var text='';
+							for (i = 0; i < resultnew.length; i++) {
+								if(Award_status[i] == 1)
+								{
+									text+= "<div class='job-list-div'><a href='javascript:getmarios("+resultnew[i].Job_Id+")'><div class='job-detail'><h4 class= 'title'>"+resultnew[i].Job_Title+"</h4><h4>"+resultnew[i].Location+"</h4><h4><span> Posted Date:"+resultnew[i].Expire_date+"</span></h4><h4><span> Expire Date:"+resultnew[i].Expire_date+"</span></h4></div><div class='job-post'><div class='job-post-detail'><h4><span>Job awarded</span></h4></div></div><div class='clear'></div></a></div>";
+								}
+								else
+								{
+									text += "<div class='job-list-div'><a href='javascript:getmarios("+resultnew[i].Job_Id+")'><div class='job-detail'><h4 class= 'title'>"+resultnew[i].Job_Title+"</h4><h4>"+resultnew[i].Location+"</h4><h4><span> Posted Date:"+resultnew[i].Expire_date+"</span></h4><h4><span> Expire Date:"+resultnew[i].Expire_date+"</span></h4></div><div class='job-post'><div class='job-post-detail'><h4><span>Marios Applied: "+mariocount[i]+"</span></h4></div></div><div class='clear'></div></a></div>";
+								}
+							}
+							document.getElementById("jobdetails").innerHTML = text;
+				 
+					document.getElementById().value= resultnew[i].Job_Id;
+				}
+				else
+				{
+					document.getElementById("jobdetails").innerHTML = "<div class='job-list-div'>No jobs found</div>";
+				}
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+			   stopLoader();
+		return getNotification();
+		}
+		/*********************************/
+		
+		var Customer_Id = window.localStorage.getItem("user_id");
+		
+		function getNotification(){
+			$.ajax({
+				type: "POST",
+				url: "http://182.73.106.114:8088/Mario_Man/customer_notifycount.php",
+				data : "Customer_Id="+Customer_Id,
+				async: true,
+				cache: false,
+				success: function(data){
+				//alert(data);
+						if(data != "")
+						{
+							addmsg(data);
+						}
+						setTimeout(
+						waitForMsg,
+						30000
+						);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+					addmsg("error", textStatus + " (" + errorThrown + ")");
+					setTimeout(
+					waitForMsg,
+					30000);
+				}
+			});
+		};
+		function addmsg(msg){
+		
+			if(msg == 0 )
+			{
+				document.getElementById('notifynumbermenu').style.display = "none";
+			}
+			else
+			{
+				document.getElementById('notifynumbermenu').style.display = "block";
+				document.getElementById('notifynumbermenu').innerHTML = msg;
+			}
+		}
+		$('input').keypress(function(e) {
+		var code = (e.keyCode ? e.keyCode : e.which);
+		if ((code==13) || (code==10))
+		{
+			var searchkey = document.getElementById("searchkey").value;
+			//var searchkeyword = id;
+			var cussession_id = window.localStorage.getItem("user_id"); 
+			 $.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_getmyjobs.php', 	
+			   data:"cussession_id="+cussession_id+"&searchkeyword="+searchkey,
+			   type: "post",
+			   success: function(data) {
+				
+			   if(data == 0)
+					{
+						 document.getElementById("jobdetails").innerHTML = "<div class='job-list-div'>No jobs found</div>";
+					}
+					else
+					{		var result=JSON.parse(data);
+							var resultnew = result.data;
+							var mariocount = result.mariocount;
+							var Award_status = result.Award_status;
+							var i;
+							var text='';
+							for (i = 0; i < resultnew.length; i++) {
+								if(Award_status[i] == 1)
+								{
+									text+= "<div class='job-list-div'><a href='javascript:getmarios("+resultnew[i].Job_Id+")'><div class='job-detail'><h4 class= 'title'>"+resultnew[i].Job_Title+"</h4><h4>"+resultnew[i].Location+"</h4><h4><span> Posted Date:"+resultnew[i].Expire_date+"</span></h4><h4><span> Expire Date:"+resultnew[i].Expire_date+"</span></h4></div><div class='job-post'><div class='job-post-detail'><h4><span>Job awarded</span></h4></div></div><div class='clear'></div></a></div>";
+								}
+								else
+								{
+									text += "<div class='job-list-div'><a href='javascript:getmarios("+resultnew[i].Job_Id+")'><div class='job-detail'><h4 class= 'title'>"+resultnew[i].Job_Title+"</h4><h4>"+resultnew[i].Location+"</h4><h4><span> Posted Date:"+resultnew[i].Posted_date+"</span></h4><h4><span> Expire Date:"+resultnew[i].Expire_date+"</span></h4></div><div class='job-post'><div class='job-post-detail'><h4><span>Marios Applied: "+mariocount[i]+"</span></h4></div></div><div class='clear'></div></a></div>";
+								}
+							}
+							document.getElementById("jobdetails").innerHTML = text;
+							
+					}
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			   });
+		}
+		});
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+		
+			window.location.href="customer_dashboard.html";
+		}
+		
+    </script>
+</body>
+
+</html>

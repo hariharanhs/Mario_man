@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+	<!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+	
+	<!-- Mario Man CSS , Script Starts here-->
+	<link rel="stylesheet" type="text/css" href="css/style.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/style1.css" /> 
+	<link type="text/css" rel="stylesheet" href="css/jquery.mmenu.all.css" />
+	<link type="text/css" rel="stylesheet" href="css/payment-style.css" />
+	<!-- Mario Man CSS , Script Ends here -->
+	
+	
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <title>MARIO MAN</title>
+</head>
+
+<body>
+	<div id="loading_spinner" class="loading_spinner"></div>
+	<!--Menu Code -->
+	<div id="page">
+		<div class="header">
+			<a class="menu" href="#menu"></a>
+			<div class="page-title"><h1>NOTIFICATION CENTER</h1></div>
+		</div>
+		<nav id="menu">
+			<ul>
+				<li><a href="AboutUsC.html">About Us</a></li> 
+				<li><a href="customer_dashboard.html">Dashboard</a></li> 
+				<li><a href="user_editprofile.html">Edit Profile</a></li> 
+				<li><a href="customer_postjobs.html">Post Jobs</a></li> 
+				<li><a href="customer_myjobs.html">My Jobs</a></li> 
+				<li><a href="javascript:logout()">Log Out</a></li>
+			</ul>
+		</nav>
+	</div>
+	<!--Menu Code -->
+	<div class="container">
+		<div id="Job_Notify_Details"></div> 
+	</div>		
+	
+	<script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script src="js/jquery-2.2.3.min.js"></script> 
+	
+	<script type="text/javascript" src="js/jquery.mmenu.all.min.js"></script>
+    <script type="text/javascript">
+        //app.initialize();
+		document.addEventListener("deviceready", init, false);
+		$(function() {
+				$('nav#menu').mmenu();
+		});
+		function logout()
+		{
+			window.localStorage.clear(); //clear all local storage
+			window.location.href="index.html"; 
+		}
+		function init()
+		{
+			startLoader();
+			stopLoader();
+			var Customer_Id = window.localStorage.getItem("user_id");
+			
+			 $.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_notification.php', 	
+			   data:"Customer_Id="+Customer_Id,
+			   type: "post",
+			   success: function(data) {
+			   //alert(data);
+			   if(data != 0)
+			   {
+					var Job_Notification_array = data;
+					if(Job_Notification_array != "" && Job_Notification_array != null)
+					{
+						var Job_Notification_Details = JSON.parse(Job_Notification_array);
+						var i;
+						var text_job=''; 
+						
+						for (i = 0; i < Job_Notification_Details.length; i++) 
+						{
+							//text_job += "<div class='job-list-div' id='seen_"+Job_Notification_Details[i].Notificaton_Id+"'><a href='javascript:getmarios("+Job_Notification_Details[i].Job_Id+","+Job_Notification_Details[i].Mario_Id+")'><div class='job-detail'><h4 class= 'title'>"+Job_Notification_Details[i].Job_Title+"</h4><h4>"+Job_Notification_Details[i].User_Name+" applied to your job </h4></div><div class='job-post'><div class='job-post-detail'><h4><span>Applied Date:"+Job_Notification_Details[i].applied_Date+"</span></h4></div></div><div class='clear'></div></a></div>";
+							text_job +="<a class='new-noti' href='javascript:getmarios("+Job_Notification_Details[i].Job_Id+","+Job_Notification_Details[i].Mario_Id+")'><div class='notification-div' id='seen_"+Job_Notification_Details[i].Notificaton_Id+"'><div class='notification-icon-job'></div><div class='notification-cont' style='float:left;'><h1 class='se'>"+Job_Notification_Details[i].User_Name+" applied to your job </h1><br><p>"+Job_Notification_Details[i].Job_Title+"</p></div><div class='clear'></div></div></a>"
+						}
+						document.getElementById("Job_Notify_Details").innerHTML = text_job;
+					}
+					
+				}
+				else
+				{
+					document.getElementById("Job_Notify_Details").innerHTML = "<div class='rating job-list-divnew'>No notifications to show</div>";
+				}
+				},
+			   error:function(error){
+			   navigator.notification.alert("Error occured. Please try again.");
+			   }
+			  });
+			  
+			  $.ajax({
+			   url : 'http://182.73.106.114:8088/Mario_Man/customer_notification.php', 	
+			   data:"Customer_Id="+Customer_Id,
+			   type: "post",
+			   success: function(data) {
+				 // alert(data);
+					   if(data != 0)
+					   {
+							var Job_Notification_array = data;
+							if(Job_Notification_array != "" && Job_Notification_array != null)
+							{
+								var Job_Notification_Details = JSON.parse(Job_Notification_array);
+								var i;
+								var text_job=''; 
+								for (i = 0; i < Job_Notification_Details.length; i++) 
+								{
+									if(Job_Notification_Details[i].cus_status == 0)
+									{
+										document.getElementById("seen_"+Job_Notification_Details[i].Notificaton_Id+"").style.backgroundColor = "#1F384B";
+									}
+								}
+							}
+						}
+					},
+				   error:function(error){
+				   navigator.notification.alert("Error occured. Please try again.");
+				   }
+			   });
+			   
+		}
+		function getmarios(id,mid)
+		{
+				window.localStorage.setItem("tempjobID",id);
+				window.localStorage.setItem("tempmarioID",mid);
+				window.location.href="customer_awardjob.html";
+		}
+		document.addEventListener("backbutton", handleBack, false);
+		
+		function handleBack(){
+		
+			window.location.href="customer_dashboard.html";
+		}
+    </script>
+</body>
+
+</html>
